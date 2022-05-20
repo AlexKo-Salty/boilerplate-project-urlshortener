@@ -45,7 +45,7 @@ app.route('/api/shorturl/:shortURL?')
     else
     {
       ShortURL.findOne( {short_url: req.params.shortURL}, function(err, data){
-        if (data.length === 0)
+        if (!data)
         {
           res.json({"error": "No short URL found for the given input"})
         }
@@ -62,12 +62,12 @@ app.route('/api/shorturl/:shortURL?')
   })
   .post((req, res) => {
     //Check the url is vaild
-    if (req.body.url.match(/(http(s)?:\/\/.)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g))
+    if (req.body.url.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g))
     {
       //Check if url exist in db
       ShortURL.findOne( {original_url: req.body.url}, function(err, data){
         if (err) return console.error(err);
-        if (data.length === 0)
+        if (!data)
         {
           //Create new url
           ShortURL.estimatedDocumentCount(function (err, count) {
@@ -90,7 +90,7 @@ app.route('/api/shorturl/:shortURL?')
     }
     else
     {
-      res.json({"error": "Invaild URL"});
+      res.json({"error": "invalid url"});
     }
   })
 
